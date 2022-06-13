@@ -1,28 +1,33 @@
-find_package(benchmark REQUIRED)
-enable_testing()
-find_package(GTest REQUIRED)
-
 # benchmark part
+find_package(benchmark REQUIRED)
 
-#add_executable(FixedBufferBench FixedBufferBench.cpp)
-#target_link_libraries(FixedBufferBench benchmark::benchmark)
+set(BenchmarkSrc
+        NumStringBench.cc
+        FixedBufferBench.cc
+        )
 
-add_executable(NumStringBench NumStringBench.cc)
-target_link_libraries(NumStringBench benchmark::benchmark)
+foreach(File IN LISTS BenchmarkSrc)
+    get_filename_component(ExeName ${File} NAME_WE)
+    add_executable(${ExeName} ${File})
+    target_link_libraries(${ExeName} benchmark::benchmark)
+endforeach()
 
 # test part
-
-add_executable(FixedBufferTest FixedBufferTest.cc)
-target_link_libraries(FixedBufferTest GTest::gtest GTest::gtest_main)
-
-add_executable(BlockingQueueTest BlockingQueueTest.cc)
-target_link_libraries(BlockingQueueTest GTest::gtest GTest::gtest_main)
-
-add_executable(TimestampTest TimestampTest.cc)
-target_link_libraries(TimestampTest gg_lib GTest::gtest GTest::gtest_main)
-
-add_executable(LogStreamTest LogStreamTest.cc)
-target_link_libraries(LogStreamTest gg_lib GTest::gtest GTest::gtest_main)
-
+enable_testing()
+find_package(GTest REQUIRED)
 include(GoogleTest)
-gtest_discover_tests(FixedBufferTest BlockingQueueTest)
+
+set(TestSrc
+        FixedBufferTest.cc
+        BlockingQueueTest.cc
+        TimestampTest.cc
+        LogStreamTest.cc
+        DateTest.cc
+        )
+
+foreach(File IN LISTS TestSrc)
+    get_filename_component(ExeName ${File} NAME_WE)
+    add_executable(${ExeName} ${File})
+    target_link_libraries(${ExeName} gg_lib GTest::gtest GTest::gtest_main)
+    gtest_discover_tests(${ExeName})
+endforeach()
