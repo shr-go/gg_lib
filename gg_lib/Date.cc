@@ -51,4 +51,5 @@ Date::YearMonthDay Date::yearMonthDay() const {
 
 inline LogStream& operator<<(LogStream& s, Date date) {
     s << date.toIsoString();
+    return s;
 }

@@ -10,7 +10,7 @@
 
 namespace gg_lib {
     constexpr int kSmallBuffer = 4000;
-    constexpr int kMiddleBuffer = 8000;
+    constexpr int kMiddleBuffer = 64 * 1000;
     constexpr int kLargeBuffer = 4000 * 1000;
 
     template<int SIZE>
@@ -47,6 +47,8 @@ namespace gg_lib {
         void add(size_t len) { cur_ += len; }
 
         void reset() { cur_ = data_; }
+
+        bool empty() const { return cur_ == data_; }
 
     private:
         const char *end() const { return data_ + sizeof data_; }

@@ -109,3 +109,7 @@ void AppendFile::flush() {
 size_t AppendFile::write(const char *data, size_t len) {
     return fwrite_unlocked(data, 1, len, fp_);
 }
+
+
+
+
