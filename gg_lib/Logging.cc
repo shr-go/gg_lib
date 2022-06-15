@@ -15,6 +15,11 @@ namespace gg_lib {
     __thread char t_time[64];
     __thread time_t t_lastSecond;
     __thread char t_zoneAbbr[16] = "GMT";
+    __thread char t_errnobuf[512];
+
+    const char *strerror_tr(int savedErrno) {
+        return strerror_r(savedErrno, t_errnobuf, sizeof t_errnobuf);
+    }
 
     Logger::LogLevel initLogLevel() {
         if (::getenv("LOG_TRACE"))
@@ -122,7 +127,7 @@ Logger::Impl::Impl(LogLevel level, int savedErrno, const SourceFile &file, int l
     stream_ << StrHelper(CurrentThread::tidString(), CurrentThread::tidStringLength());
     stream_ << StrHelper(LogLevelName[level], 6);
     if (savedErrno != 0) {
-        stream_ << strerrordesc_np(savedErrno) << Fmt(" (errno={}) ", savedErrno);
+        stream_ << strerror_tr(savedErrno) << Fmt(" (errno={}) ", savedErrno);
     }
 
 }

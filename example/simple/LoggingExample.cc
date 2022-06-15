@@ -4,7 +4,7 @@
 #include "gg_lib/Logging.h"
 #include "gg_lib/TimeZone.h"
 
-int g_total;
+uint32_t g_total;
 FILE *out = nullptr;
 
 void fileOutput(const char *msg, int len) {
@@ -22,7 +22,8 @@ int main() {
     int n = 1000 * 1000;
     Timestamp start(Timestamp::now());
     for (int i = 0; i < n; ++i) {
-        LOG_INFO << Fmt("{} {} {}", "Hello 0123456789", "abcdefghijklmnopqrstuvwxyz", i);
+        LOG_INFO << Fmt("{} {} {} {} {:030}", "Hello 0123456789", "abcdefghijklmnopqrstuvwxyz"
+                        , "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABCDEFGHIJKLMNopqrstuvwxyz", i);
     }
     Timestamp end(Timestamp::now());
     auto seconds = static_cast<double >(end.microSecondsSinceEpoch() - start.microSecondsSinceEpoch())

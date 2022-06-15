@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.0)
 project(gg_lib)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -11,6 +11,7 @@ include_directories(${CMAKE_SOURCE_DIR}/third_party)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_subdirectory(gg_lib)
+add_subdirectory(example)
 
 if(GG_LIB_TEST)
     add_subdirectory(test)

@@ -10,6 +10,8 @@
 namespace gg_lib {
     class TimeZone;
 
+    const char *strerror_tr(int savedErrno);
+
     class Logger {
     public:
         enum LogLevel {

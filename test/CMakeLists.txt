@@ -31,14 +31,3 @@ foreach(File IN LISTS TestSrc)
     target_link_libraries(${ExeName} gg_lib GTest::gtest GTest::gtest_main)
     gtest_discover_tests(${ExeName})
 endforeach()
-
-# example part
-set(ExampleSrc
-        LoggingExample.cc
-        )
-
-foreach(File IN LISTS ExampleSrc)
-    get_filename_component(ExeName ${File} NAME_WE)
-    add_executable(${ExeName} ${File})
-    target_link_libraries(${ExeName} gg_lib)
-endforeach()

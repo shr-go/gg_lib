@@ -2,6 +2,7 @@
 // Author: shr-go
 
 #include "gg_lib/FileUtil.h"
+#include "gg_lib/Logging.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -83,7 +84,7 @@ AppendFile::~AppendFile() {
 
 void AppendFile::append(const char *data, size_t len) {
     if (err_) {
-        fprintf(stderr, "AppendFile::append() failed %s\n", strerrordesc_np(err_));
+        fprintf(stderr, "AppendFile::append() failed %s\n", strerror_tr(err_));
         return;
     }
     size_t written = 0;
@@ -93,7 +94,7 @@ void AppendFile::append(const char *data, size_t len) {
         if (n != remain) {
             err_ = ferror(fp_);
             if (err_) {
-                fprintf(stderr, "AppendFile::append() failed %s\n", strerrordesc_np(err_));
+                fprintf(stderr, "AppendFile::append() failed %s\n", strerror_tr(err_));
                 break;
             }
         }
