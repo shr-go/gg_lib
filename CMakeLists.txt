@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.22)
 project(gg_lib)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+
 set(CMAKE_CXX_STANDARD 11)
 include_directories(${CMAKE_SOURCE_DIR}/third_party)
 include_directories(${CMAKE_SOURCE_DIR}/include)
