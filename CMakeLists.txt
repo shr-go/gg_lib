@@ -11,4 +11,7 @@ include_directories(${CMAKE_SOURCE_DIR}/third_party)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_subdirectory(gg_lib)
-add_subdirectory(test)
+
+if(GG_LIB_TEST)
+    add_subdirectory(test)
+endif()
