@@ -32,6 +32,8 @@ namespace gg_lib {
         static time_t fromUtcTime(int year, int month, int day,
                                   int hour, int minute, int seconds);
 
+        const char* getZoneAbbr() const;
+
         struct Data;
     private:
         std::shared_ptr<Data> data_;

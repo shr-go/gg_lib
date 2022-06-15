@@ -27,6 +27,9 @@ namespace gg_lib {
     private:
         const char *str_;
     };
+
+    typedef std::atomic<int32_t> AtomicInt32;
+    typedef std::atomic<int64_t> AtomicInt64;
 }
 
 #endif //GG_LIB_UTILS_H

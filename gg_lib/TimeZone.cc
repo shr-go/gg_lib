@@ -63,6 +63,7 @@ namespace gg_lib {
         std::vector<Localtime> localtimes;
         std::vector<string> names;
         string abbreviation;
+        string zoneAbbr;
     };
 
     bool readTimeZoneFile(StringArg zonefile, struct TimeZone::Data *data) {
@@ -148,7 +149,7 @@ TimeZone::TimeZone(int eastOfUtc, const char *name)
 
 struct tm TimeZone::toLocalTime(time_t seconds) const {
     struct tm localTime{};
-    assert(data_ != NULL);
+    assert(data_ != nullptr);
     const Data &data(*data_);
 
     Transition sentry(seconds, 0, 0);
@@ -219,6 +220,22 @@ time_t TimeZone::fromUtcTime(int year, int month, int day,
     int secondsInDay = hour * 3600 + minute * 60 + seconds;
     time_t days = date.julianDay() - Date::kJulianDayOf1970_01_01;
     return days * kSecondsPerDay + secondsInDay;
+}
+
+const char *TimeZone::getZoneAbbr() const {
+    if (data_->zoneAbbr.empty()) {
+        assert(data_ != nullptr);
+        const Data &data(*data_);
+        time_t seconds = time(nullptr);
+        Transition sentry(seconds, 0, 0);
+        const Localtime *local = findLocalTime(data, sentry, Comp(true));
+        if (local) {
+            data_ -> zoneAbbr = &data.abbreviation[local->arrbIdx];
+        } else {
+            data_ -> zoneAbbr = "UNKNOWN";
+        }
+    }
+    return data_->zoneAbbr.c_str();
 }
 
 

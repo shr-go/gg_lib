@@ -1,9 +1,12 @@
 set(GG_LIB_SRC
-        Timestamp.cc
-        FileUtil.cc
-        LogStream.cc
-        TimeZone.cc
+        CountDownLatch.cc
         Date.cc
+        FileUtil.cc
+        Logging.cc
+        LogStream.cc
+        ThreadHelper.cc
+        Timestamp.cc
+        TimeZone.cc
         )
 
 add_library(gg_lib ${GG_LIB_SRC})

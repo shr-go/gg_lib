@@ -116,7 +116,7 @@ namespace gg_lib {
         string data_;
     };
 
-    inline LogStream& operator<<(LogStream& s, const Fmt& fmt) {
+    inline LogStream &operator<<(LogStream &s, const Fmt &fmt) {
         s << fmt.toStringView();
         return s;
     }
