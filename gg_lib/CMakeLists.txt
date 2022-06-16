@@ -1,4 +1,5 @@
 set(GG_LIB_SRC
+        AsyncLogging.cc
         CountDownLatch.cc
         Date.cc
         FileUtil.cc

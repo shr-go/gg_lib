@@ -162,5 +162,3 @@ void Logger::Impl::formatTime() {
 void Logger::Impl::finish() {
     stream_ << Fmt(" - {}:{}\n", basename_.data_, line_);
 }
-
-

@@ -67,9 +67,9 @@ namespace gg_lib {
 
         static void setLogLevel(LogLevel level);
 
-        typedef std::function<void (const char*, int )> OutputFunc;
+        typedef std::function<void(const char *, int)> OutputFunc;
 
-        typedef std::function<void ()> FlushFunc;
+        typedef std::function<void()> FlushFunc;
 
         static void setOutput(OutputFunc);
 

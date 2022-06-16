@@ -1,6 +1,7 @@
 # example part
 set(ExampleSrc
         simple/LoggingExample.cc
+        simple/AsyncLogging.cc
         )
 
 foreach(File IN LISTS ExampleSrc)

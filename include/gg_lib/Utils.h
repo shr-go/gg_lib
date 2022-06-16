@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <string>
+#include <atomic>
 #include <string_view.h>
 #include <fmt/core.h>
 
