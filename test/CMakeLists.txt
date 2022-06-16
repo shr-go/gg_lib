@@ -31,3 +31,7 @@ foreach(File IN LISTS TestSrc)
     target_link_libraries(${ExeName} gg_lib GTest::gtest GTest::gtest_main)
     gtest_discover_tests(${ExeName})
 endforeach()
+
+add_executable(ThreadTest ThreadTest.cc)
+target_link_libraries(ThreadTest gg_lib)
+
