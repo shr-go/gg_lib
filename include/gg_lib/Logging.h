@@ -10,6 +10,8 @@
 namespace gg_lib {
     class TimeZone;
 
+    extern TimeZone g_logTimeZone;
+
     const char *strerror_tr(int savedErrno);
 
     class Logger {
@@ -65,9 +67,9 @@ namespace gg_lib {
 
         static void setLogLevel(LogLevel level);
 
-        typedef void(*OutputFunc)(const char *msg, int len);
+        typedef std::function<void (const char*, int )> OutputFunc;
 
-        typedef void (*FlushFunc)();
+        typedef std::function<void ()> FlushFunc;
 
         static void setOutput(OutputFunc);
 

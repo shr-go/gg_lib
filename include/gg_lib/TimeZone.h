@@ -34,6 +34,8 @@ namespace gg_lib {
 
         const char* getZoneAbbr() const;
 
+        time_t getTimeOff();
+
         struct Data;
     private:
         std::shared_ptr<Data> data_;

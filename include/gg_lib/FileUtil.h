@@ -11,6 +11,8 @@
 
 #include <stdexcept>
 #include <endian.h>
+#include <memory>
+#include <mutex>
 
 namespace gg_lib {
     class ReadSmallFile : noncopyable {
@@ -115,6 +117,35 @@ namespace gg_lib {
 
     private:
         FILE *fp_;
+    };
+
+    class LogFile: noncopyable {
+    public:
+        LogFile(string  basename,
+                off_t rollSize,
+                bool threadSafe = true,
+                int flushInterval = 3);
+        ~LogFile();
+
+        void append(const char* logline, int len);
+        void flush();
+        bool rollFile();
+    private:
+        void append_unlocked(const char* logline, int len);
+        string getLogFileName(time_t* now);
+
+        const string basename_;
+        const off_t rollSize_;
+        const int flushInterval_;
+
+        std::unique_ptr<std::mutex> mutex_;
+        time_t startOfPeriod_;
+        time_t lastRoll_;
+        time_t lastFlush_;
+        time_t offset_;
+        std::unique_ptr<AppendFile> file_;
+
+        const static int kRollPerSeconds_ = 60*60*24;
     };
 }
 

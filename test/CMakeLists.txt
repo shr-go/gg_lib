@@ -4,6 +4,7 @@ find_package(benchmark REQUIRED)
 set(BenchmarkSrc
         NumStringBench.cc
         FixedBufferBench.cc
+        TimestampBench.cc
         )
 
 foreach(File IN LISTS BenchmarkSrc)

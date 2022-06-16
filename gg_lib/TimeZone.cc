@@ -128,6 +128,7 @@ namespace gg_lib {
                 local = &data.localtimes[data.transitions.back().localtimeIdx];
             }
         }
+
         return local;
     }
 }
@@ -230,12 +231,24 @@ const char *TimeZone::getZoneAbbr() const {
         Transition sentry(seconds, 0, 0);
         const Localtime *local = findLocalTime(data, sentry, Comp(true));
         if (local) {
-            data_ -> zoneAbbr = &data.abbreviation[local->arrbIdx];
+            data_->zoneAbbr = &data.abbreviation[local->arrbIdx];
         } else {
-            data_ -> zoneAbbr = "UNKNOWN";
+            data_->zoneAbbr = "UNKNOWN";
         }
     }
     return data_->zoneAbbr.c_str();
+}
+
+time_t TimeZone::getTimeOff() {
+    const Data &data(*data_);
+    time_t seconds = time(nullptr);
+    Transition sentry(seconds, 0, 0);
+    const Localtime *local = findLocalTime(data, sentry, Comp(true));
+    if (local) {
+        return local->gmtOffset;
+    } else {
+        return 0;
+    }
 }
 
 

@@ -3,10 +3,13 @@
 
 #include "gg_lib/FileUtil.h"
 #include "gg_lib/Logging.h"
+#include "gg_lib/TimeZone.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/stat.h>
+
+#include <utility>
 
 using namespace gg_lib;
 
@@ -112,5 +115,92 @@ size_t AppendFile::write(const char *data, size_t len) {
 }
 
 
+LogFile::LogFile(string basename,
+                 off_t rollSize,
+                 bool threadSafe,
+                 int flushInterval)
+        : basename_(std::move(basename)),
+          rollSize_(rollSize),
+          flushInterval_(flushInterval),
+          startOfPeriod_(0),
+          lastRoll_(0),
+          lastFlush_(0),
+          mutex_(threadSafe ? new std::mutex : nullptr) {
+    if (g_logTimeZone) {
+        offset_ = g_logTimeZone.getTimeOff();
+    } else {
+        offset_ = 0;
+    }
+    rollFile();
+}
+
+LogFile::~LogFile() = default;
+
+void LogFile::append(const char *logline, int len) {
+    if (mutex_) {
+        std::lock_guard<std::mutex> lock(*mutex_);
+        append_unlocked(logline, len);
+    } else {
+        append_unlocked(logline, len);
+    }
+}
+
+void LogFile::flush() {
+    if (mutex_) {
+        std::lock_guard<std::mutex> lock(*mutex_);
+        file_->flush();
+    } else {
+        file_->flush();
+    }
+}
+
+void LogFile::append_unlocked(const char* logline, int len) {
+    file_->append(logline, len);
+    if (file_ -> writtenBytes() > rollSize_) {
+        rollFile();
+    } else {
+        time_t now = ::time(nullptr) + offset_;
+        time_t thisPeriod_ = now / kRollPerSeconds_ * kRollPerSeconds_;
+        if (thisPeriod_ != startOfPeriod_) {
+            rollFile();
+        } else if (now - lastFlush_ > flushInterval_) {
+            lastFlush_ = now;
+            file_->flush();
+        }
+    }
+}
+
+bool LogFile::rollFile() {
+    time_t now = 0;
+    string filename = getLogFileName(&now);
+    time_t start = now / kRollPerSeconds_ * kRollPerSeconds_;
+
+    if (now > lastRoll_) {
+        lastRoll_ = now;
+        lastFlush_ = now;
+        startOfPeriod_ = start;
+        file_.reset(new AppendFile(filename));
+        return true;
+    }
+    return false;
+}
+
+string LogFile::getLogFileName(time_t* now) {
+    string filename;
+    filename.reserve(basename_.size() + 64);
+    filename = basename_;
+
+    char timebuf[32];
+    struct tm tm{};
+    *now = time(nullptr) + offset_;
+    gmtime_r(now, &tm);
+    strftime(timebuf, sizeof timebuf, ".%Y%m%d-%H%M%S", &tm);
+    filename += timebuf;
+    char pidbuf[32];
+    snprintf(pidbuf, sizeof pidbuf, ".%d", ::getpid());
+    filename += pidbuf;
+    filename += ".log";
+    return filename;
+}
 
 
