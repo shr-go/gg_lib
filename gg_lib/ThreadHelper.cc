@@ -56,17 +56,14 @@ namespace gg_lib {
         delete data;
     }
 
-    template<typename TF, typename TS>
-    Thread::Thread(TF &&func, TS &&name)
-            : started_(false),
+    Thread::Thread(Thread &&th) noexcept
+            : started_(th.started_),
               joined_(false),
-              thread_(),
-              latch_(1) {
-        static_assert(std::is_base_of<ThreadFunc, TF>::value, "TF need to be ThreadFunc");
-        static_assert(std::is_base_of<string, TS>::value, "TS need to be String");
-        func_ = std::forward<TF>(func);
-        name_ = std::forward<TS>(name);
-        setDefaultName();
+              thread_(std::move(th.thread_)),
+              latch_(1),
+              func_(std::move(th.func_)),
+              name_(std::move(th.name_)) {
+        assert(!started_);
     }
 
     Thread::~Thread() {

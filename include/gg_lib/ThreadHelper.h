@@ -4,6 +4,7 @@
 #ifndef GG_LIB_THREADHELPER_H
 #define GG_LIB_THREADHELPER_H
 
+#include "gg_lib/noncopyable.h"
 #include "gg_lib/Utils.h"
 #include "gg_lib/CountDownLatch.h"
 #include <functional>
@@ -12,12 +13,24 @@
 #include <sstream>
 
 namespace gg_lib {
-    class Thread {
+    class Thread : noncopyable {
     public:
         typedef std::function<void()> ThreadFunc;
 
-        template<typename TF, typename TS>
-        explicit Thread(TF &&, TS &&name = TS());
+        template<typename TF, typename TS = string>
+        explicit Thread(TF &&func, TS &&name = TS())
+                : started_(false),
+                  joined_(false),
+                  thread_(),
+                  latch_(1) {
+            func_ = std::forward<TF>(func);
+            name_ = std::forward<TS>(name);
+            setDefaultName();
+        }
+
+        Thread(Thread &&th) noexcept;
+
+//        explicit Thread(ThreadFunc, string = "");
 
         ~Thread();
 
@@ -59,9 +72,6 @@ namespace gg_lib {
         }
 
         inline int tidStringLength() {
-//            if (__builtin_expect(t_tidStringLength == 0, false)) {
-//                cacheTid();
-//            }
             return t_tidStringLength;
         }
 
