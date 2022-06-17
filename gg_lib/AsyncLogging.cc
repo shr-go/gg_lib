@@ -26,7 +26,7 @@ AsyncLogging::AsyncLogging(StringArg basename,
 }
 
 void AsyncLogging::append(const char *logline, int len) {
-    std::unique_lock<std::mutex> lk(mutex_);
+    std::lock_guard<std::mutex> lk(mutex_);
     if (currentBuffer_->avail() > len) {
         currentBuffer_->append(logline, len);
     } else {
@@ -44,7 +44,6 @@ void AsyncLogging::append(const char *logline, int len) {
 void AsyncLogging::threadFunc() {
     assert(running_);
     latch_.countDown();
-    printf("rollSize_=%ld\n", rollSize_);
     LogFile output(basename_, rollSize_, false);
     BufferPtr Buffer1(new Buffer);
     BufferPtr Buffer2(new Buffer);
@@ -69,7 +68,7 @@ void AsyncLogging::threadFunc() {
 
         assert(!toWrite.empty());
 
-        if (toWrite.size() > 32) {
+        if (toWrite.size() > 16) {
             char buf[256];
             snprintf(buf, sizeof buf, "Dropped log messages at %s, %zd larger buffers\n",
                      Timestamp::now().toString().c_str(),
