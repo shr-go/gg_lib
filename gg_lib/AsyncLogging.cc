@@ -27,7 +27,7 @@ AsyncLogging::AsyncLogging(StringArg basename,
 
 void AsyncLogging::append(const char *logline, int len) {
     std::lock_guard<std::mutex> lk(mutex_);
-    if (currentBuffer_->avail() > len) {
+    if (__builtin_expect(currentBuffer_->avail() > len, true)) {
         currentBuffer_->append(logline, len);
     } else {
         buffers_.push_back(std::move(currentBuffer_));
