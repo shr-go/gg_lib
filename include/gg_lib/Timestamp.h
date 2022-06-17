@@ -71,11 +71,13 @@ namespace gg_lib {
     }
 }
 
-template<>
-struct std::hash<gg_lib::Timestamp> {
-    size_t operator()(const gg_lib::Timestamp &time) const {
-        return hash<long long>{}(static_cast<long long>(time.microSecondsSinceEpoch()));
-    }
-};
+namespace std {
+    template<>
+    struct hash<gg_lib::Timestamp> {
+        size_t operator()(const gg_lib::Timestamp &time) const {
+            return hash<long long>{}(static_cast<long long>(time.microSecondsSinceEpoch()));
+        }
+    };
+}
 
 #endif //GG_LIB_TIMESTAMP_H
