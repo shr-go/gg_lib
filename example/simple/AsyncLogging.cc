@@ -10,7 +10,7 @@
 
 using namespace gg_lib;
 
-constexpr int threadNum = 8;
+constexpr int threadNum = 4;
 constexpr int n = 1000 * 1000;
 constexpr int mb = 1024 * 1024;
 

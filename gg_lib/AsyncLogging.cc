@@ -23,6 +23,10 @@ AsyncLogging::AsyncLogging(StringArg basename,
           nextBuffer_(new Buffer),
           buffers_() {
     buffers_.reserve(16);
+#ifdef PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP
+    /// try use hybrid mutex for better performance
+    *mutex_.native_handle() = PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP;
+#endif
 }
 
 void AsyncLogging::append(const char *logline, int len) {
