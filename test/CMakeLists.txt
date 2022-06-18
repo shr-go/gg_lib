@@ -35,4 +35,6 @@ endforeach()
 
 add_executable(ThreadTest ThreadTest.cc)
 target_link_libraries(ThreadTest gg_lib)
+add_executable(ThreadPoolTest ThreadPoolTest.cc)
+target_link_libraries(ThreadPoolTest gg_lib)
 

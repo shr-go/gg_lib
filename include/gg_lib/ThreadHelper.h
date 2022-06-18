@@ -23,6 +23,8 @@ namespace gg_lib {
                   joined_(false),
                   thread_(),
                   latch_(1) {
+            static_assert(std::is_convertible<TF, ThreadFunc>::value, "TF is not a ThreadFunc.");
+            static_assert(std::is_convertible<TS, string>::value, "TS can not convert to string.");
             func_ = std::forward<TF>(func);
             name_ = std::forward<TS>(name);
             setDefaultName();

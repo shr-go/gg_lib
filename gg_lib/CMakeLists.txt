@@ -6,6 +6,7 @@ set(GG_LIB_SRC
         Logging.cc
         LogStream.cc
         ThreadHelper.cc
+        ThreadPool.cc
         Timestamp.cc
         TimeZone.cc
         )
