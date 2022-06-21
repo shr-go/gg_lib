@@ -9,6 +9,7 @@ set(GG_LIB_SRC
         ThreadPool.cc
         Timestamp.cc
         TimeZone.cc
+        net/EventLoop.cc
         )
 
 add_library(gg_lib ${GG_LIB_SRC})
