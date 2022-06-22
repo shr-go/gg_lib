@@ -19,11 +19,12 @@ find_package(GTest REQUIRED)
 include(GoogleTest)
 
 set(TestSrc
-        FixedBufferTest.cc
+        AnyTest.cc
         BlockingQueueTest.cc
-        TimestampTest.cc
-        LogStreamTest.cc
         DateTest.cc
+        FixedBufferTest.cc
+        LogStreamTest.cc
+        TimestampTest.cc
         )
 
 foreach(File IN LISTS TestSrc)
