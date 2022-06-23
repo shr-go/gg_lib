@@ -39,7 +39,7 @@ namespace gg_lib {
         any(ValueType &&value,
             typename std::enable_if<!std::is_same<any &, ValueType>::value>::type * = 0,
             typename std::enable_if<!std::is_const<ValueType>::value>::type * = 0)
-                : content_(new holder<typename std::decay<ValueType>::type>(static_cast<ValueType&&>(value))) {}
+                : content_(new holder<typename std::decay<ValueType>::type>(static_cast<ValueType &&>(value))) {}
 
         ~any() noexcept {
             delete content_;

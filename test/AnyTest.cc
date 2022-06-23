@@ -9,7 +9,8 @@
 struct Foo {
     std::string foo_;
     char bar_[256];
-    Foo(): foo_(std::string(128, 'F')), bar_() {
+
+    Foo() : foo_(std::string(128, 'F')), bar_() {
         strncpy(bar_, foo_.c_str(), foo_.size());
     }
 };
@@ -23,7 +24,7 @@ TEST(AnyTest, TestAssign) {
     any foo = Foo();
     EXPECT_EQ(foo.type(), typeid(Foo));
     EXPECT_EQ(any_cast<Foo>(foo).foo_, std::string(128, 'F'));
-    Foo& bar = any_cast<Foo&>(foo);
+    Foo &bar = any_cast<Foo &>(foo);
     bar.foo_ = std::string(128, 'G');
     EXPECT_EQ(any_cast<Foo>(foo).foo_, std::string(128, 'G'));
 
@@ -32,12 +33,12 @@ TEST(AnyTest, TestAssign) {
 TEST(AnyTest, TestCast) {
     any foo = Foo();
     EXPECT_THROW(any_cast<int>(foo), bad_any_cast);
-    EXPECT_THROW(any_cast<Foo*>(foo), bad_any_cast);
-    EXPECT_THROW(any_cast<const Foo*>(foo), bad_any_cast);
+    EXPECT_THROW(any_cast<Foo *>(foo), bad_any_cast);
+    EXPECT_THROW(any_cast<const Foo *>(foo), bad_any_cast);
     EXPECT_NO_THROW(any_cast<Foo>(foo));
     EXPECT_NO_THROW(any_cast<const Foo>(foo));
-    EXPECT_NO_THROW(any_cast<Foo&>(foo));
-    EXPECT_NO_THROW(any_cast<const Foo&>(foo));
+    EXPECT_NO_THROW(any_cast<Foo &>(foo));
+    EXPECT_NO_THROW(any_cast<const Foo &>(foo));
 }
 
 TEST(AnyTest, TestPointer) {
