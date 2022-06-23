@@ -39,7 +39,7 @@ namespace gg_lib {
         any(ValueType &&value,
             typename std::enable_if<!std::is_same<any &, ValueType>::value>::type * = 0,
             typename std::enable_if<!std::is_const<ValueType>::value>::type * = 0)
-                : content_(std::forward<ValueType>(value)) {}
+                : content_(new holder<typename std::decay<ValueType>::type>(static_cast<ValueType&&>(value))) {}
 
         ~any() noexcept {
             delete content_;
@@ -66,6 +66,7 @@ namespace gg_lib {
         template<class ValueType>
         any &operator=(ValueType &&rhs) {
             any(std::forward<ValueType>(rhs)).swap(*this);
+            return *this;
         }
 
         bool empty() const noexcept {
@@ -158,7 +159,7 @@ namespace gg_lib {
         static_assert(std::is_rvalue_reference<ValueType &&>::value
                       || std::is_const<typename std::remove_reference<ValueType>::type>::value,
                       "any_cast shall not be used for getting nonconst references to temporary objects");
-        return any_cast<ValueType>(operand);.
+        return any_cast<ValueType>(operand);
     }
 
 }
