@@ -10,12 +10,14 @@
 #include <string.h>
 #include <string>
 #include <atomic>
+#include <functional>
 #include <string_view.h>
 #include <fmt/core.h>
 
 namespace gg_lib {
     using std::string;
     using nonstd::string_view;
+    using namespace std::placeholders;
 
     class StringArg {
     public:

@@ -109,15 +109,24 @@ namespace gg_lib {
         __thread char t_tidString[32];
         __thread int t_tidStringLength = 0;
         __thread const char *t_threadName = "unknown";
+        thread_local std::thread::id t_tid;
 
         void cacheTid() {
             if (t_tidStringLength == 0) {
                 std::stringstream ss;
+                t_tid = std::this_thread::get_id();
                 ss << "0x" << std::hex << std::this_thread::get_id();
                 t_tidStringLength =
                         snprintf(t_tidString, sizeof t_tidString, "%s ", ss.str().c_str());
             }
-        };
+        }
+
+        const std::thread::id& tid() {
+            if (__builtin_expect(t_tidStringLength == 0, false)) {
+                cacheTid();
+            }
+            return t_tid;
+        }
     }
 
     class ThreadNameInitializer {

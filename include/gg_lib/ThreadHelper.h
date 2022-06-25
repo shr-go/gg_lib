@@ -66,6 +66,8 @@ namespace gg_lib {
 
         void cacheTid();
 
+        const std::thread::id& tid();
+
         inline const char *tidString() {
             if (__builtin_expect(t_tidStringLength == 0, false)) {
                 cacheTid();
