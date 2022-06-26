@@ -46,6 +46,12 @@ namespace gg_lib {
 
         static int numCreated() { return numCreated_.load(); }
 
+        static string tidToString(const std::thread::id& threadId) {
+            std::stringstream ss;
+            ss << "0x" << std::hex << threadId;
+            return ss.str();
+        }
+
 
     private:
         void setDefaultName();

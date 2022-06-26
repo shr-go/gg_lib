@@ -113,11 +113,9 @@ namespace gg_lib {
 
         void cacheTid() {
             if (t_tidStringLength == 0) {
-                std::stringstream ss;
                 t_tid = std::this_thread::get_id();
-                ss << "0x" << std::hex << std::this_thread::get_id();
                 t_tidStringLength =
-                        snprintf(t_tidString, sizeof t_tidString, "%s ", ss.str().c_str());
+                        snprintf(t_tidString, sizeof t_tidString, "%s ", Thread::tidToString(t_tid).c_str());
             }
         }
 
