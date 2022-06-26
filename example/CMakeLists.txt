@@ -2,6 +2,7 @@
 set(ExampleSrc
         simple/LoggingExample.cc
         simple/AsyncLogging.cc
+        simple/TimerQueueExample.cc
         )
 
 foreach(File IN LISTS ExampleSrc)

@@ -34,8 +34,14 @@ foreach(File IN LISTS TestSrc)
     gtest_discover_tests(${ExeName})
 endforeach()
 
-add_executable(ThreadTest ThreadTest.cc)
-target_link_libraries(ThreadTest gg_lib)
-add_executable(ThreadPoolTest ThreadPoolTest.cc)
-target_link_libraries(ThreadPoolTest gg_lib)
+# test binary
+set(TestBinarySrc
+        ThreadTest.cc
+        ThreadPoolTest.cc
+        net/TimerQueueTest.cc)
 
+foreach(File IN LISTS TestBinarySrc)
+    get_filename_component(ExeName ${File} NAME_WE)
+    add_executable(${ExeName} ${File})
+    target_link_libraries(${ExeName} gg_lib)
+endforeach()
