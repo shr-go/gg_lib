@@ -10,6 +10,12 @@ set(GG_LIB_SRC
         Timestamp.cc
         TimeZone.cc
         net/EventLoop.cc
+        net/SocketsHelper.cc
+        net/TImerQueue.cc
+        net/Channel.cc
+        net/Poller.cc
+        net/poller/DefaultPoller.cc
+        net/poller/PollPoller.cc
         )
 
 add_library(gg_lib ${GG_LIB_SRC})
