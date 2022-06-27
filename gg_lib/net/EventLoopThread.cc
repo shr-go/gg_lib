@@ -2,17 +2,19 @@
 // Author: shr-go
 
 #include "gg_lib/net/EventLoopThread.h"
+
+#include <utility>
 #include "gg_lib/net/EventLoop.h"
 
 using namespace gg_lib;
 using namespace gg_lib::net;
 
-EventLoopThread::EventLoopThread(const EventLoopThread::ThreadInitCallback &cb,
+EventLoopThread::EventLoopThread(EventLoopThread::ThreadInitCallback cb,
                                  const string &name)
         : loop_(nullptr),
           exiting_(false),
           thread_(std::bind(&EventLoopThread::threadFunc, this), name),
-          callback_(cb) {}
+          callback_(std::move(cb)) {}
 
 
 EventLoopThread::~EventLoopThread() {

@@ -38,8 +38,12 @@ endforeach()
 set(TestBinarySrc
         ThreadTest.cc
         ThreadPoolTest.cc
+        net/AcceptorTest.cc
+        net/EventLoopTest.cc
+        net/EventLoopThreadPoolTest.cc
+        net/EventLoopThreadTest.cc
         net/TimerQueueTest.cc
-        net/AcceptorTest.cc)
+        )
 
 foreach(File IN LISTS TestBinarySrc)
     get_filename_component(ExeName ${File} NAME_WE)

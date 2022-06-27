@@ -14,7 +14,7 @@ namespace gg_lib {
         public:
             typedef std::function<void(EventLoop *)> ThreadInitCallback;
 
-            explicit EventLoopThread(const ThreadInitCallback &cb = ThreadInitCallback(),
+            explicit EventLoopThread(ThreadInitCallback cb = ThreadInitCallback(),
                             const string &name = string());
 
             ~EventLoopThread();

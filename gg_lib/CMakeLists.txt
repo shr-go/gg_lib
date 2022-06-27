@@ -13,6 +13,7 @@ set(GG_LIB_SRC
         net/Channel.cc
         net/EventLoop.cc
         net/EventLoopThread.cc
+        net/EventLoopThreadPool.cc
         net/Poller.cc
         net/SocketsHelper.cc
         net/TcpConnection.cc
