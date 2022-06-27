@@ -13,7 +13,7 @@
 #include "gg_lib/net/NetUtils.h"
 
 #include <unordered_map>
-#include <map>
+#include <queue>
 
 namespace gg_lib {
     namespace net {
@@ -24,7 +24,6 @@ namespace gg_lib {
         class TimerQueue : noncopyable {
         public:
             typedef std::shared_ptr<Timer> TimerPtr;
-            typedef std::weak_ptr<Timer> WeakTimerPtr;
 
             explicit TimerQueue(EventLoop *loop);
 
@@ -37,7 +36,8 @@ namespace gg_lib {
             void cancel(TimerId timerId);
 
         private:
-            typedef std::multimap<Timestamp, WeakTimerPtr> TimerMap;
+            typedef std::pair<Timestamp, TimerId> Entry;
+            typedef std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> TimerMap;
             typedef std::unordered_map<TimerId, TimerPtr> ActiveTimerMap;
 
             void addTimerInLoop(TimerPtr &timer);
@@ -50,7 +50,7 @@ namespace gg_lib {
 
             void reset(const std::vector<TimerPtr> &expired, Timestamp now);
 
-            bool insert(const TimerPtr& timer);
+            bool insert(const TimerPtr &timer);
 
             EventLoop *loop_;
             const int timerfd_;

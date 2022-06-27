@@ -123,16 +123,18 @@ void TimerQueue::handleRead() {
 
 std::vector<TimerQueue::TimerPtr> TimerQueue::getExpired(Timestamp now) {
     std::vector<TimerPtr> expired;
-    auto end = timers_.upper_bound(now);
-    assert(end == timers_.end() || now < end->first);
-    auto begin = timers_.begin();
-    for (auto iter = timers_.begin(); iter != end; ++iter) {
-        WeakTimerPtr ptr = iter->second;
-        if (TimerPtr timer = ptr.lock()) {
-            expired.push_back(std::move(timer));
+    while (!timers_.empty()) {
+        const auto& entry = timers_.top();
+        if (entry.first <= now) {
+            auto iter = activeTimers_.find(entry.second);
+            if (iter != activeTimers_.end()) {
+                expired.push_back(iter->second);
+            }
+            timers_.pop();
+        } else {
+            break;
         }
     }
-    timers_.erase(begin, end);
     return expired;
 }
 
@@ -149,11 +151,12 @@ void TimerQueue::reset(const std::vector<TimerPtr> &expired, Timestamp now) {
         }
     }
     while (!timers_.empty()) {
-        auto timer = timers_.begin();
-        if (timer->second.expired()) {
-            timers_.erase(timer);
+        const auto& entry = timers_.top();
+        auto iter = activeTimers_.find(entry.second);
+        if (iter == activeTimers_.end()) {
+            timers_.pop();
         } else {
-            nextExpire = timer->first;
+            nextExpire = entry.first;
             break;
         }
     }
@@ -167,12 +170,11 @@ bool TimerQueue::insert(const TimerQueue::TimerPtr &timer) {
     loop_->assertInLoopThread();
     bool earliestChanged = false;
     Timestamp when = timer->expiration();
-    auto begin = timers_.begin();
-    if (begin == timers_.end() || when < begin->first) {
+    if (timers_.empty() || when < timers_.top().first) {
         earliestChanged = true;
     }
-    timers_.emplace(when, WeakTimerPtr(timer));
     TimerId timerId = timer->sequence();
+    timers_.emplace(when, timerId);
     if (activeTimers_.find(timerId) == activeTimers_.end()) {
         activeTimers_.emplace(timerId, timer);
     }

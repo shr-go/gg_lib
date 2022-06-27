@@ -37,7 +37,7 @@ void cancel() {
 int main() {
     EventLoop loop;
     g_loop = &loop;
-    for (int i = 0; i < 1000000; ++i) {
+    for (int i = 0; i < 3000000; ++i) {
         loop.runAfter((1.0 / (i + 1)), std::bind(&addCnt, 1));
     }
     TimerId timer = loop.runEvery(1, &print);

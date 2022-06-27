@@ -29,7 +29,7 @@ void cancel(TimerId timer) {
 int main() {
     EventLoop loop;
     g_loop = &loop;
-    Logger::setLogLevel(Logger::TRACE);
+//    Logger::setLogLevel(Logger::TRACE);
     print("main");
     loop.runAfter(1, std::bind(print, "once1"));
     loop.runAfter(1.5, std::bind(print, "once1.5"));
