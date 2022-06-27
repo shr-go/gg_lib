@@ -84,7 +84,7 @@ TimerQueue::~TimerQueue() {
 TimerId TimerQueue::addTimer(TimerCallback cb,
                              Timestamp when,
                              double interval) {
-    TimerPtr timer(new Timer(std::move(cb), when, interval));
+    TimerPtr timer = std::make_shared<Timer>(std::move(cb), when, interval);
     TimerId timerId = timer->sequence();
     loop_->runInLoop(
             std::bind(&TimerQueue::addTimerInLoop, this, std::move(timer)));

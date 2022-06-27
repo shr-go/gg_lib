@@ -136,7 +136,7 @@ namespace gg_lib {
 using namespace gg_lib;
 
 TimeZone::TimeZone(const char *zonefile)
-        : data_(new TimeZone::Data) {
+        : data_(std::make_shared<Data>()) {
     if (!readTimeZoneFile(zonefile, data_.get())) {
         data_.reset();
     }
