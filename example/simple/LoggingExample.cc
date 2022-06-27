@@ -30,7 +30,6 @@ void threadFunc() {
 }
 
 int main() {
-    using namespace std::placeholders;
     Logger::setLogLevel(Logger::LogLevel::DEBUG);
     TimeZone tz("/usr/share/zoneinfo/Asia/Shanghai");
     Logger::setTimeZone(tz);

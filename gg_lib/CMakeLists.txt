@@ -9,12 +9,15 @@ set(GG_LIB_SRC
         ThreadPool.cc
         Timestamp.cc
         TimeZone.cc
-        net/EventLoop.cc
-        net/SocketsHelper.cc
-        net/TImerQueue.cc
-        net/Channel.cc
-        net/Poller.cc
         net/Acceptor.cc
+        net/Channel.cc
+        net/EventLoop.cc
+        net/EventLoopThread.cc
+        net/Poller.cc
+        net/SocketsHelper.cc
+        net/TcpConnection.cc
+        net/TcpServer.cc
+        net/TimerQueue.cc
         net/poller/DefaultPoller.cc
         net/poller/PollPoller.cc
         )
