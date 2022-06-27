@@ -8,7 +8,7 @@
 #include "gg_lib/net/EventLoop.h"
 
 #include <vector>
-#include "parallel_hashmap/phmap.h"
+#include <unordered_map>
 
 
 namespace gg_lib {
@@ -45,7 +45,7 @@ namespace gg_lib {
 
 
         protected:
-            typedef phmap::flat_hash_map<int, Channel *> ChannelMap;
+            typedef std::unordered_map<int, Channel *> ChannelMap;
             ChannelMap channels_;
         private:
             EventLoop *ownerLoop_;

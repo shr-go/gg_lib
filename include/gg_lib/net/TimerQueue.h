@@ -12,8 +12,8 @@
 #include "gg_lib/net/Chnanel.h"
 #include "gg_lib/net/NetUtils.h"
 
-#include "parallel_hashmap/phmap.h"
-#include "parallel_hashmap/btree.h"
+#include <unordered_map>
+#include <map>
 
 namespace gg_lib {
     namespace net {
@@ -37,8 +37,8 @@ namespace gg_lib {
             void cancel(TimerId timerId);
 
         private:
-            typedef phmap::btree_multimap<Timestamp, WeakTimerPtr> TimerMap;
-            typedef phmap::flat_hash_map<TimerId, TimerPtr> ActiveTimerMap;
+            typedef std::multimap<Timestamp, WeakTimerPtr> TimerMap;
+            typedef std::unordered_map<TimerId, TimerPtr> ActiveTimerMap;
 
             void addTimerInLoop(TimerPtr &timer);
 
