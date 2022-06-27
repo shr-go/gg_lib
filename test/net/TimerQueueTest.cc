@@ -2,6 +2,7 @@
 // Author: shr-go
 
 #include "gg_lib/net/EventLoop.h"
+#include "gg_lib/net/EventLoopThread.h"
 #include "gg_lib/net/TimerQueue.h"
 #include "gg_lib/Logging.h"
 
@@ -13,6 +14,11 @@ using namespace gg_lib::net;
 
 int cnt = 0;
 EventLoop *g_loop;
+
+void printTid() {
+    printf("pid = %d, thread = %s\n", getpid(), CurrentThread::tidString());
+    printf("now %s\n", Timestamp::now().toString().c_str());
+}
 
 void print(const char *msg) {
     printf("msg %s %s\n", Timestamp::now().toString().c_str(), msg);
@@ -29,7 +35,7 @@ void cancel(TimerId timer) {
 int main() {
     EventLoop loop;
     g_loop = &loop;
-//    Logger::setLogLevel(Logger::TRACE);
+    Logger::setLogLevel(Logger::TRACE);
     print("main");
     loop.runAfter(1, std::bind(print, "once1"));
     loop.runAfter(1.5, std::bind(print, "once1.5"));
@@ -44,4 +50,11 @@ int main() {
 
     loop.loop();
     print("main loop exits");
+    {
+        EventLoopThread loopThread;
+        EventLoop *loop = loopThread.startLoop();
+        loop->runAfter(2, printTid);
+        sleep(3);
+        print("thread loop exits");
+    }
 }

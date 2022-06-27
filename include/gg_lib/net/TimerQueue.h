@@ -23,6 +23,7 @@ namespace gg_lib {
 
         class TimerQueue : noncopyable {
         public:
+            // FIXME use unique_ptr instead.
             typedef std::shared_ptr<Timer> TimerPtr;
 
             explicit TimerQueue(EventLoop *loop);
