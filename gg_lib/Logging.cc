@@ -104,10 +104,6 @@ void Logger::setLogLevel(Logger::LogLevel level) {
     g_logLevel = level;
 }
 
-bool Logger::canLevelLog(Logger::LogLevel level) {
-    return g_logLevel <= level;
-}
-
 void Logger::setOutput(OutputFunc out) {
     g_output = out;
 }

@@ -67,8 +67,6 @@ namespace gg_lib {
 
         static void setLogLevel(LogLevel level);
 
-        static bool canLevelLog(LogLevel level);
-
         typedef std::function<void(const char *, int)> OutputFunc;
 
         typedef std::function<void()> FlushFunc;
@@ -105,6 +103,10 @@ namespace gg_lib {
 
     inline Logger::LogLevel Logger::logLevel() {
         return g_logLevel;
+    }
+
+    inline bool canLevelLog(Logger::LogLevel level) {
+        return g_logLevel <= level;
     }
 
     template<typename T>

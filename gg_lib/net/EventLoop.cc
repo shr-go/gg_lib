@@ -92,7 +92,7 @@ void EventLoop::loop() {
         activeChannels_.clear();
         pollReturnTime_ = poller_->poll(kPollTimeMs, &activeChannels_);
         ++iteration_;
-        if (Logger::canLevelLog(Logger::TRACE)) {
+        if (canLevelLog(Logger::TRACE)) {
             printActiveChannels();
         }
         eventHandling_ = true;

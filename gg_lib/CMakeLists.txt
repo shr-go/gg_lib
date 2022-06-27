@@ -14,6 +14,7 @@ set(GG_LIB_SRC
         net/TImerQueue.cc
         net/Channel.cc
         net/Poller.cc
+        net/Acceptor.cc
         net/poller/DefaultPoller.cc
         net/poller/PollPoller.cc
         )

@@ -51,31 +51,36 @@ int sockets::accept(int sockfd, struct sockaddr_in6 *addr) {
                            &addrlen, SOCK_NONBLOCK | SOCK_CLOEXEC);
     if (connfd < 0) {
         int savedErrno = errno;
-        LOG_SYSERR << "Socket::accept";
         switch (savedErrno) {
             case EAGAIN:
-            case ECONNABORTED:
             case EINTR:
-            case EPROTO: // ???
-            case EPERM:
-            case EMFILE: // per-process lmit of open file desctiptor ???
-                // expected errors
                 errno = savedErrno;
                 break;
-            case EBADF:
-            case EFAULT:
-            case EINVAL:
-            case ENFILE:
-            case ENOBUFS:
-            case ENOMEM:
-            case ENOTSOCK:
-            case EOPNOTSUPP:
-                // unexpected errors
-                LOG_FATAL << "unexpected error of ::accept " << savedErrno;
-                break;
             default:
-                LOG_FATAL << "unknown error of ::accept " << savedErrno;
-                break;
+                LOG_SYSERR << "Socket::accept";
+                switch (savedErrno) {
+                    case ECONNABORTED:
+                    case EPROTO: // ???
+                    case EPERM:
+                    case EMFILE: // per-process lmit of open file desctiptor ???
+                        // expected errors
+                        errno = savedErrno;
+                        break;
+                    case EBADF:
+                    case EFAULT:
+                    case EINVAL:
+                    case ENFILE:
+                    case ENOBUFS:
+                    case ENOMEM:
+                    case ENOTSOCK:
+                    case EOPNOTSUPP:
+                        // unexpected errors
+                        LOG_FATAL << "unexpected error of ::accept " << savedErrno;
+                        break;
+                    default:
+                        LOG_FATAL << "unknown error of ::accept " << savedErrno;
+                        break;
+                }
         }
     }
     return connfd;
