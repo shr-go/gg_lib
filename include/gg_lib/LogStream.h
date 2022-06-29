@@ -104,8 +104,8 @@ namespace gg_lib {
     class Fmt {
     public:
         template<typename... ARGS>
-        Fmt(const char *fmt, ARGS &&... args) {
-            data_ = fmt::format(fmt, args...);
+        explicit Fmt(const char *fmt, ARGS &&... args) {
+            data_ = fmt::format(fmt, std::forward<ARGS>(args)...);
         }
 
         string_view toStringView() const {

@@ -133,6 +133,12 @@ void output(Buffer&& buf, const void* inner)
 {
     Buffer newbuf(std::move(buf));
     EXPECT_EQ(inner, newbuf.peek());
+    buf.retrieveAll();
+    EXPECT_EQ(newbuf.readableBytes(), 5);
+    EXPECT_EQ(buf.readableBytes(), 0);
+    buf.reset();
+    EXPECT_EQ(inner, newbuf.peek());
+    EXPECT_NE(inner, buf.peek());
 }
 
 TEST(BufferTest, BufferMove) {

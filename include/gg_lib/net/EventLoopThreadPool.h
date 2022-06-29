@@ -19,7 +19,7 @@ namespace gg_lib {
         public:
             typedef std::function<void(EventLoop *)> ThreadInitCallback;
 
-            EventLoopThreadPool(EventLoop *baseLoop, const string &nameArg);
+            EventLoopThreadPool(EventLoop *baseLoop, string nameArg);
 
             ~EventLoopThreadPool();
 

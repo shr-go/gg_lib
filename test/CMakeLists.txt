@@ -39,6 +39,7 @@ endforeach()
 set(TestBinarySrc
         ThreadTest.cc
         ThreadPoolTest.cc
+        WeakCallbackTest.cc
         net/AcceptorTest.cc
         net/EventLoopTest.cc
         net/EventLoopThreadPoolTest.cc

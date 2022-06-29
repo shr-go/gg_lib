@@ -230,7 +230,7 @@ namespace gg_lib {
             void shrink(size_t reserve) {
                 buffer_.shrink_to_fit();
                 Buffer other;
-                other.ensureWritableBytes(readableBytes()+reserve);
+                other.ensureWritableBytes(readableBytes() + reserve);
                 other.append(toStringView());
                 swap(other);
             }
@@ -259,6 +259,13 @@ namespace gg_lib {
                 }
                 /// Don't loop read here, cause peer may send lots of data which can crash program.
                 return n;
+            }
+
+            /// Only for debug use.
+            void reset() {
+                readerIndex_ = kCheapPrepend;
+                writerIndex_ = kCheapPrepend;
+                buffer_.clear();
             }
 
         private:

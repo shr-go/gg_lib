@@ -2,20 +2,22 @@
 // Author: shr-go
 
 #include "gg_lib/net/EventLoopThreadPool.h"
+
+#include <utility>
 #include "gg_lib/net/EventLoop.h"
 #include "gg_lib/net/EventLoopThread.h"
 
 using namespace gg_lib;
 using namespace gg_lib::net;
 
-EventLoopThreadPool::EventLoopThreadPool(EventLoop *baseLoop, const string &nameArg)
+EventLoopThreadPool::EventLoopThreadPool(EventLoop *baseLoop, string nameArg)
         : baseLoop_(baseLoop),
-          name_(nameArg),
+          name_(std::move(nameArg)),
           started_(false),
           numThreads_(0),
           next_(0) {}
 
-EventLoopThreadPool::~EventLoopThreadPool() = default;
+EventLoopThreadPool::~EventLoopThreadPool() {};
 
 
 void EventLoopThreadPool::start(const ThreadInitCallback &cb) {

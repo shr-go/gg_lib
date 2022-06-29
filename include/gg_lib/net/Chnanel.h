@@ -42,7 +42,7 @@ namespace gg_lib {
                 errorCallback_ = std::move(cb);
             }
 
-            void tie(const std::shared_ptr<void> &);
+            void tie(std::weak_ptr<void> obj);
 
             int fd() const { return fd_; }
 

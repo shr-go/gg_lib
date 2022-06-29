@@ -1,6 +1,8 @@
 // Copyright (c) 2022 shr-go. All rights reserved.
 // Author: shr-go
 
+#include <utility>
+
 #include "gg_lib/Logging.h"
 #include "gg_lib/net/Chnanel.h"
 #include "gg_lib/net/EventLoop.h"
@@ -28,8 +30,8 @@ Channel::~Channel() {
     }
 }
 
-void Channel::tie(const std::shared_ptr<void> &obj) {
-    tie_ = obj;
+void Channel::tie(std::weak_ptr<void> obj) {
+    tie_ = std::move(obj);
     tied_ = true;
 }
 
