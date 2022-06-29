@@ -2,6 +2,7 @@
 set(ExampleSrc
         simple/LoggingExample.cc
         simple/AsyncLogging.cc
+        simple/EchoServerExample.cc
         simple/TimerQueueExample.cc
         )
 
