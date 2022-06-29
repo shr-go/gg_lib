@@ -3,7 +3,7 @@
 
 #include "gg_lib/net/TcpConnection.h"
 #include "gg_lib/net/EventLoop.h"
-#include "gg_lib/net/Chnanel.h"
+#include "gg_lib/net/Channel.h"
 
 #include <utility>
 

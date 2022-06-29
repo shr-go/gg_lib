@@ -1,8 +1,8 @@
 // Copyright (c) 2022 shr-go. All rights reserved.
 // Author: shr-go
 
-#ifndef GG_LIB_CHNANEL_H
-#define GG_LIB_CHNANEL_H
+#ifndef GG_LIB_CHANNEL_H
+#define GG_LIB_CHANNEL_H
 
 #include "gg_lib/noncopyable.h"
 #include "gg_lib/Timestamp.h"
@@ -127,4 +127,4 @@ namespace gg_lib {
     }
 }
 
-#endif //GG_LIB_CHNANEL_H
+#endif //GG_LIB_CHANNEL_H

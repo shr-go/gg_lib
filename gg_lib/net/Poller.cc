@@ -2,7 +2,7 @@
 // Author: shr-go
 
 #include "gg_lib/net/Poller.h"
-#include "gg_lib/net/Chnanel.h"
+#include "gg_lib/net/Channel.h"
 
 using namespace gg_lib;
 using namespace gg_lib::net;

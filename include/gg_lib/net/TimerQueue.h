@@ -9,7 +9,7 @@
 #include <memory>
 
 #include "gg_lib/Timestamp.h"
-#include "gg_lib/net/Chnanel.h"
+#include "gg_lib/net/Channel.h"
 #include "gg_lib/net/NetUtils.h"
 
 #include <unordered_map>

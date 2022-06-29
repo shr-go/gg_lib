@@ -2,7 +2,7 @@
 // Author: shr-go
 
 #include "gg_lib/net/poller/EPollPoller.h"
-#include "gg_lib/net/Chnanel.h"
+#include "gg_lib/net/Channel.h"
 #include "gg_lib/Logging.h"
 
 #include <assert.h>

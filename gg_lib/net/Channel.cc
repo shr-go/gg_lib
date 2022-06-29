@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "gg_lib/Logging.h"
-#include "gg_lib/net/Chnanel.h"
+#include "gg_lib/net/Channel.h"
 #include "gg_lib/net/EventLoop.h"
 
 using namespace gg_lib;
