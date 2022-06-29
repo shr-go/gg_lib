@@ -69,6 +69,8 @@ namespace gg_lib {
 
             string getTcpInfoString() const;
 
+            void send(const char *msg) { send(string_view(msg)); }
+
             void send(string &&message);
 
             void send(const void *message, size_t len);

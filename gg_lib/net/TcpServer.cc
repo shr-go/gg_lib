@@ -61,6 +61,9 @@ void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr) {
     TcpConnectionPtr conn =
             std::make_shared<TcpConnection>(ioLoop, connName, sockfd, localAddr, peerAddr);
     connections_[connName] = conn;
+#ifndef NDEBUG
+    weakVec_.push_back(conn);
+#endif
     conn->setConnectionCallback(connectionCallback_);
     conn->setMessageCallback(messageCallback_);
     conn->setWriteCompleteCallback(writeCompleteCallback_);
@@ -86,3 +89,19 @@ void TcpServer::removeConnectionInLoop(const TcpConnectionPtr &conn) {
     ioLoop->queueInLoop(
             std::bind(&TcpConnection::connectDestroyed, conn));
 }
+
+#ifndef NDEBUG
+void TcpServer::checkConnAlive() {
+    auto iter = weakVec_.begin();
+    int expired = 0, total = 0;
+    while (iter != weakVec_.end()) {
+        total += 1;
+        auto weakPtr = *iter;
+        if (weakPtr.expired()) {
+            expired += 1;
+        }
+        ++iter;
+    }
+    fprintf(stderr, "expired/total = %d/%d\n", expired, total);
+}
+#endif

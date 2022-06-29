@@ -60,6 +60,9 @@ namespace gg_lib {
             void setMessageCallback(MessageCallback cb) { messageCallback_ = std::move(cb); }
 
             void setWriteCompleteCallback(WriteCompleteCallback cb) { writeCompleteCallback_ = std::move(cb); }
+#ifndef NDEBUG
+            void checkConnAlive();
+#endif
 
         private:
             void newConnection(int sockfd, const InetAddress& peerAddr);
@@ -83,6 +86,11 @@ namespace gg_lib {
             AtomicInt32 started_;
             int nextConnId_;
             ConnectionMap connections_;
+#ifndef NDEBUG
+            typedef std::weak_ptr<TcpConnection> WeakTcpConnectionPtr;
+            typedef std::vector<WeakTcpConnectionPtr> WeakVec;
+            WeakVec weakVec_;
+#endif
         };
     }
 }
