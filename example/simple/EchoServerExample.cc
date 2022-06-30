@@ -39,8 +39,8 @@ private:
                          conn->peerAddress().toIpPort(),
                          conn->localAddress().toIpPort(),
                          conn->connected() ? "UP" : "DOWN");
-        LOG_INFO << conn->getTcpInfoString();
-        conn->send("hello\n");
+        conn->setHighWaterMarkCallback(&EchoServer::onHighWaterMark, 256 * 1024);
+//        conn->send("hello\n");
     }
 
     static void onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp time) {
@@ -49,22 +49,34 @@ private:
         conn->send(buf);
     }
 
+    static void onHighWaterMark(const TcpConnectionPtr &conn, size_t size) {
+        conn->stopRead();
+        conn->setWriteCompleteCallback(&EchoServer::onWriteComplete);
+    }
+
+    static void onWriteComplete(const TcpConnectionPtr& conn) {
+        conn->startRead();
+        conn->setWriteCompleteCallback(WriteCompleteCallback());
+    }
+
     EventLoop *loop_;
     TcpServer server_;
 };
 
 EventLoop *gLoop = nullptr;
+
 void quit() {
-    gLoop -> quit();
+    gLoop->quit();
 }
 
 int main(int argc, char **argv) {
-    TimeZone tz("/usr/share/zoneinfo/Asia/Shanghai");
-    Logger::setTimeZone(tz);
-    AsyncLogging async("/tmp/EchoServer", 1 << 30);
-    async.start();
-    Logger::setOutput([&async](const char *msg, int len){async.append(msg, len);});
-    Logger::setFlush([]{});
+//    TimeZone tz("/usr/share/zoneinfo/Asia/Shanghai");
+//    Logger::setTimeZone(tz);
+//    AsyncLogging async("/tmp/EchoServer", 1 << 30);
+//    async.start();
+//    Logger::setOutput([&async](const char *msg, int len) { async.append(msg, len); });
+    Logger::setOutput([](const char*, int) {});
+    Logger::setFlush([] {});
 
     LOG_INFO << "pid = " << getpid() << ", thread = " << CurrentThread::tidString();
     LOG_INFO << "sizeof TcpConnection = " << sizeof(TcpConnection);
@@ -79,7 +91,7 @@ int main(int argc, char **argv) {
         EchoServer server(&loop, listenAddr);
 
         server.start();
-        loop.runEvery(2, std::bind(&EchoServer::debug, &server));
+//        loop.runEvery(2, std::bind(&EchoServer::debug, &server));
         loop.loop();
     }
 }
