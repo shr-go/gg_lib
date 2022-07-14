@@ -63,7 +63,7 @@ namespace gg_lib {
             return *this;
         }
 
-        template<class ValueType>
+        template<typename ValueType>
         any &operator=(ValueType &&rhs) {
             any(std::forward<ValueType>(rhs)).swap(*this);
             return *this;
@@ -160,6 +160,22 @@ namespace gg_lib {
                       || std::is_const<typename std::remove_reference<ValueType>::type>::value,
                       "any_cast shall not be used for getting nonconst references to temporary objects");
         return any_cast<ValueType>(operand);
+    }
+
+    template<typename ValueType, typename... Args>
+    inline any make_any(Args &&... args) {
+        static_assert(std::is_constructible<typename std::decay<ValueType>::type, Args &&...>::value
+                      || std::is_copy_constructible<typename std::decay<ValueType>::type>::value,
+                      "make_any can not construct value with these args");
+        return any(ValueType(std::forward<Args>(args)...));
+    }
+
+    template<typename ValueType, typename U, typename... Args>
+    inline any make_any(std::initializer_list<U> il, Args &&... args) {
+        static_assert(std::is_constructible<typename std::decay<ValueType>::type, std::initializer_list<U>&, Args &&...>::value
+                      || std::is_copy_constructible<typename std::decay<ValueType>::type>::value,
+                      "make_any can not construct value with these args");
+        return any(ValueType(il, std::forward<Args>(args)...));
     }
 
 }

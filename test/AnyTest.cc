@@ -76,3 +76,10 @@ TEST(AnyTest, TestPointer) {
     p1 = any();
     EXPECT_TRUE(weak.use_count() == 0);
 }
+
+TEST(AnyTest, MakeAny) {
+    auto a1 = make_any<std::string>("aaaa");
+    EXPECT_EQ(any_cast<std::string>(a1), std::string("aaaa"));
+    auto a2 = make_any<std::vector<int>>({1, 2, 3, 4, 5});
+    EXPECT_THAT(any_cast<std::vector<int>>(a2), testing::ElementsAre(1, 2, 3, 4, 5));
+}
