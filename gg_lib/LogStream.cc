@@ -6,9 +6,9 @@
 #include "gg_lib/LogStream.h"
 
 namespace gg_lib {
-    const char digits[] = "9876543210123456789";
-    const char *zero = digits + 9;
-    const char digitsHex[] = "0123456789ABCDEF";
+    constexpr char digits[] = "9876543210123456789";
+    constexpr const char *const zero = digits + 9;
+    constexpr char digitsHex[] = "0123456789ABCDEF";
 
     template<typename T>
     size_t convert(char buf[], T value) {
@@ -99,18 +99,18 @@ namespace gg_lib {
     LogStream &LogStream::operator<<(const void *p) {
         auto v = reinterpret_cast<uintptr_t>(p);
         if (buffer_.avail() >= kMaxNumericSize) {
-            char* buf = buffer_.current();
+            char *buf = buffer_.current();
             buf[0] = '0';
             buf[1] = 'x';
-            size_t len = convertHex(buf+2, v);
+            size_t len = convertHex(buf + 2, v);
             buffer_.add(len + 2);
         }
         return *this;
     }
 
-    LogStream& LogStream::operator<<(double v) {
+    LogStream &LogStream::operator<<(double v) {
         if (buffer_.avail() >= kMaxNumericSize) {
-            char* buf = buffer_.current();
+            char *buf = buffer_.current();
             int len = grisu3_print_double(v, buf);
             buffer_.add(len);
         }
