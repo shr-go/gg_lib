@@ -48,7 +48,7 @@ void bench() {
     auto seconds = static_cast<double >(end.microSecondsSinceEpoch() - start.microSecondsSinceEpoch())
                    / Timestamp::kMicroSecondsPerSecond;
     int64_t g_total_ = g_total.load();
-    printf("%f seconds, %d bytes, %10.2f msg/s, %.2f MiB/s\n",
+    printf("%f seconds, %ld bytes, %10.2f msg/s, %.2f MiB/s\n",
            seconds, g_total_, n * threadNum / seconds, g_total_ / seconds / (1024 * 1024));
 }
 
