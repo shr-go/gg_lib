@@ -26,6 +26,7 @@ set(TestSrc
         LogStreamTest.cc
         TimestampTest.cc
         net/BufferTest.cc
+        net/HttpServerTest.cc
         )
 
 foreach(File IN LISTS TestSrc)

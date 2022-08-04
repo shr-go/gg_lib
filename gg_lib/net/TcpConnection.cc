@@ -26,6 +26,16 @@ void gg_lib::net::defaultMessageCallback(const TcpConnectionPtr &conn,
     buffer->retrieveAll();
 }
 
+void gg_lib::net::optionalHighWaterMarkCallback(const TcpConnectionPtr &conn, size_t) {
+    conn->stopRead();
+    conn->setWriteCompleteCallback(optionalDoneHighWaterMarkCallback);
+}
+
+void gg_lib::net::optionalDoneHighWaterMarkCallback(const TcpConnectionPtr &conn) {
+    conn->startRead();
+    conn->setWriteCompleteCallback(WriteCompleteCallback());
+}
+
 TcpConnection::TcpConnection(EventLoop *loop,
                              string name,
                              int sockfd,

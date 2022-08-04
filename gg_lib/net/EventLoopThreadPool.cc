@@ -29,7 +29,7 @@ void EventLoopThreadPool::start(const ThreadInitCallback &cb) {
     for (int i = 0; i < numThreads_; ++i) {
         char buf[name_.size() + 32];
         snprintf(buf, sizeof buf, "%s-%d", name_.c_str(), i);
-        threads_.push_back(std::make_unique<EventLoopThread>(cb, string(buf)));
+        threads_.push_back(make_unique<EventLoopThread>(cb, string(buf)));
         loops_.push_back(threads_.back()->startLoop());
     }
     if (numThreads_ == 0 && cb) {

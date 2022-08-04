@@ -129,7 +129,7 @@ namespace gg_lib {
                 writerIndex_ += len;
             }
 
-            void unwrite(size_t len) {
+            void unWrite(size_t len) {
                 assert(len <= readableBytes());
                 writerIndex_ -= len;
             }

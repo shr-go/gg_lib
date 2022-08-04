@@ -4,6 +4,7 @@ set(ExampleSrc
         simple/AsyncLogging.cc
         simple/EchoServerExample.cc
         simple/TimerQueueExample.cc
+        simple/HttpServerExample.cc
         )
 
 foreach(File IN LISTS ExampleSrc)

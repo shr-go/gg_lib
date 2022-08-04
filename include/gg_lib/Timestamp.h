@@ -57,6 +57,10 @@ namespace gg_lib {
             return os << std::to_string(time.microSecondsSinceEpoch_);
         }
 
+        void swap(Timestamp &rhs) {
+            std::swap(microSecondsSinceEpoch_, rhs.microSecondsSinceEpoch_);
+        }
+
         static constexpr int kMicroSecondsPerSecond = 1000 * 1000;
     private:
         int64_t microSecondsSinceEpoch_;
