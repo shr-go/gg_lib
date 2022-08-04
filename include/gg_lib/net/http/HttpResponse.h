@@ -24,7 +24,8 @@ namespace gg_lib {
             };
 
             explicit HttpResponse(bool close)
-                    : statusCode_(kUnknown), closeConnection_(close) {}
+                    : headers_(), statusCode_(kUnknown), closeConnection_(close),
+                      statusMessage_(), body_() {}
 
             void setStatusCode(HttpStatusCode code) { statusCode_ = code; }
 
@@ -32,7 +33,7 @@ namespace gg_lib {
 
             void setCloseConnection(bool on) { closeConnection_ = on; }
 
-            bool closeConnection() const { return closeConnection_; }
+            bool getCloseConnection() const { return closeConnection_; }
 
             void setContentType(StringArg contentType) { addHeader("Content-Type", contentType); }
 
@@ -46,8 +47,8 @@ namespace gg_lib {
             std::unordered_map<string, string> headers_;
             HttpStatusCode statusCode_;
             string statusMessage_;
-            bool closeConnection_;
             string body_;
+            bool closeConnection_;
         };
     }
 }

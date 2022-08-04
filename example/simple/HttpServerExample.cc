@@ -15,18 +15,22 @@ int main(int argc, char **argv) {
     Logger::setFlush([] {});
     Logger::setLogLevel(Logger::WARN);
 
+    int port = 8080;
     int numThreads = 0;
     if (argc > 1) {
-        numThreads = atoi(argv[1]);
+        port = atoi(argv[1]);
+    }
+    if (argc > 2) {
+        numThreads = atoi(argv[2]);
     }
     EventLoop loop;
-    HttpServer server(&loop, InetAddress(3012), "dummy");
-    server.setGetCallback("/", [](const HttpRequest& req, HttpResponse* resp){
+    HttpServer server(&loop, InetAddress(port), "dummy");
+    server.setGetCallback("/plaintext", [](const HttpRequest& req, HttpResponse* resp){
         resp->setStatusCode(HttpResponse::k200Ok);
         resp->setStatusMessage("OK");
         resp->setContentType("text/plain");
         resp->addHeader("Server", "gg_lib");
-        resp->setBody("hello, world!\n");
+        resp->setBody("Hello, World!");
     });
     server.setThreadNum(numThreads);
     server.start();
