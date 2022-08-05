@@ -23,7 +23,7 @@ namespace gg_lib {
                 k404NotFound = 404,
             };
 
-            explicit HttpResponse(bool close)
+            explicit HttpResponse(bool close = false)
                     : headers_(), statusCode_(kUnknown), closeConnection_(close),
                       statusMessage_(), body_() {}
 
@@ -42,6 +42,8 @@ namespace gg_lib {
             void setBody(string body) { body_ = std::move(body); }
 
             void appendToBuffer(Buffer *output) const;
+
+            void reset();
 
         private:
             std::unordered_map<string, string> headers_;

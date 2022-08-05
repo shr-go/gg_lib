@@ -51,3 +51,11 @@ void HttpResponse::appendToBuffer(Buffer *output) const {
     output->append("\r\n");
     output->append(body_);
 }
+
+void HttpResponse::reset() {
+    headers_.clear();
+    statusMessage_.clear();
+    body_.clear();
+    statusCode_ = kUnknown;
+    closeConnection_ = false;
+}

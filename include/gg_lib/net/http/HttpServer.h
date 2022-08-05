@@ -54,7 +54,7 @@ namespace gg_lib {
                            Buffer *buf,
                            Timestamp receiveTime);
 
-            void onRequest(const TcpConnectionPtr &, const HttpRequest &);
+            void onRequest(const HttpRequest &req, HttpResponse* resp);
 
             TcpServer server_;
             std::unordered_map<string, HttpCallback> getCallback_;

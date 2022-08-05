@@ -48,40 +48,43 @@ void HttpServer::onConnection(const TcpConnectionPtr &conn) {
 
 void HttpServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp receiveTime) {
     auto &context = any_cast<std::shared_ptr<HttpContext> &>(conn->getContext());
-    conn->setTcpCork(true);
-    while (conn->connected()) {
+    Buffer outBuf;
+    HttpResponse response;
+    bool needClose = false;
+    while (!needClose) {
         if (!context->parseRequest(buf, receiveTime)) {
-            conn->send("HTTP/1.1 400 Bad Request\r\n\r\n");
+            outBuf.append("HTTP/1.1 400 Bad Request\r\n\r\n");
             context->reset();
-            conn->forceClose(); //Should we close connection after a wrong http
-            break;
+            needClose = true;
         } else if (context->gotAll()) {
-            onRequest(conn, context->request());
+            onRequest(context->request(), &response);
+            response.appendToBuffer(&outBuf);
             context->reset();
+            if (response.getCloseConnection()) {
+                needClose = true;
+            }
+            response.reset();
         } else {
             break;
         }
     }
-    conn->setTcpCork(false);
+    conn->send(std::move(outBuf));
+    if (needClose) {
+        conn->forceClose();
+    }
 }
 
-void HttpServer::onRequest(const TcpConnectionPtr &conn, const HttpRequest &req) {
+void HttpServer::onRequest(const HttpRequest &req, HttpResponse *resp) {
     const string &connection = req.getHeader("Connection");
     bool close = connection == "close" ||
                  (req.getVersion() == HttpRequest::kHttp10 && connection != "Keep-Alive");
-    HttpResponse response(close);
+    resp->setCloseConnection(close);
     auto method = req.getMethod();
     if (method == HttpRequest::kGet) {
         const auto &cb = getGetCallback(req.getPath());
         if (cb) {
-            cb(req, &response);
+            cb(req, resp);
         }
-    }
-    Buffer buf;
-    response.appendToBuffer(&buf);
-    conn->send(std::move(buf));
-    if (response.getCloseConnection()) {
-        conn->forceClose();
     }
 }
 
