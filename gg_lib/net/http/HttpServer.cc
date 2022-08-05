@@ -48,11 +48,12 @@ void HttpServer::onConnection(const TcpConnectionPtr &conn) {
 
 void HttpServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp receiveTime) {
     auto &context = any_cast<std::shared_ptr<HttpContext> &>(conn->getContext());
-    while (true) {
+    conn->setTcpCork(true);
+    while (conn->connected()) {
         if (!context->parseRequest(buf, receiveTime)) {
             conn->send("HTTP/1.1 400 Bad Request\r\n\r\n");
             context->reset();
-            conn->shutdown(); //Should we close connection after a wrong http
+            conn->forceClose(); //Should we close connection after a wrong http
             break;
         } else if (context->gotAll()) {
             onRequest(conn, context->request());
@@ -61,6 +62,7 @@ void HttpServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, Timestamp 
             break;
         }
     }
+    conn->setTcpCork(false);
 }
 
 void HttpServer::onRequest(const TcpConnectionPtr &conn, const HttpRequest &req) {
@@ -77,9 +79,9 @@ void HttpServer::onRequest(const TcpConnectionPtr &conn, const HttpRequest &req)
     }
     Buffer buf;
     response.appendToBuffer(&buf);
-    conn->send(&buf);
+    conn->send(std::move(buf));
     if (response.getCloseConnection()) {
-        conn->shutdown();
+        conn->forceClose();
     }
 }
 

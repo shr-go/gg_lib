@@ -178,6 +178,8 @@ namespace gg_lib {
 
             void setTcpNoDelay(bool on) const;
 
+            void setTcpCork(bool on) const;
+
             void setReuseAddr(bool on) const;
 
             void setReusePort(bool on) const;

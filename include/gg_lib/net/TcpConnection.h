@@ -46,6 +46,8 @@ namespace gg_lib {
 
             void setTcpNoDelay(bool on) { socket_->setTcpNoDelay(on); }
 
+            void setTcpCork(bool on) { socket_->setTcpCork(on); }
+
             void setContext(any context) { context_ = std::move(context); }
 
             const any &getContext() const { return context_; }
