@@ -81,7 +81,7 @@ void HttpServer::onRequest(const HttpRequest &req, HttpResponse *resp) {
     resp->setCloseConnection(close);
     auto method = req.getMethod();
     if (method == HttpRequest::kGet) {
-        const auto &cb = getGetCallback(req.getPath());
+        const auto &cb = getCallback(req.getPath());
         if (cb) {
             cb(req, resp);
         }

@@ -147,3 +147,12 @@ TEST(BufferTest, BufferMove) {
     const void* inner = buf.peek();
     output(std::move(buf), inner);
 }
+
+TEST(BufferTest, BufferFmt) {
+    Buffer buf;
+    buf.append(Fmt("{}-{}", 1, 2));
+    EXPECT_EQ(buf.retrieveAllAsString(), "1-2");
+    buf.append(Fmt("{}-{}", 1, 2));
+    buf.append(Fmt("{}{}{}", "AA", "BB", 1));
+    EXPECT_EQ(buf.retrieveAllAsString(), "1-2AABB1");
+}

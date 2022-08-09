@@ -2,6 +2,7 @@
 // Author: shr-go
 
 #include "gg_lib/net/http/HttpResponse.h"
+#include "gg_lib/Logging.h"
 #include "gg_lib/net/Buffer.h"
 
 using namespace gg_lib;
@@ -28,28 +29,17 @@ static inline void refreshDateTime() {
 }
 
 void HttpResponse::appendToBuffer(Buffer *output) const {
-    char buf[32];
-    snprintf(buf, sizeof buf, "HTTP/1.1 %d ", statusCode_);
-    output->append(buf);
-    output->append(statusMessage_);
-    output->append("\r\n");
+    output->append(Fmt("HTTP/1.1 {} {}\r\n", statusCode_, statusMessage_));
     if (closeConnection_) {
         output->append("Connection: close\r\n");
     } else {
-        snprintf(buf, sizeof buf, "Content-Length: %zd\r\n", body_.size());
-        output->append(buf);
-        output->append("Connection: Keep-Alive\r\n");
+        output->append(Fmt("Content-Length: {}\r\nConnection: Keep-Alive\r\n", body_.size()));
     }
     for (const auto &header: headers_) {
-        output->append(header.first);
-        output->append(": ");
-        output->append(header.second);
-        output->append("\r\n");
+        output->append(Fmt("{}: {}\r\n", header.first, header.second));
     }
     refreshDateTime();
-    output->append(t_dateTime);
-    output->append("\r\n");
-    output->append(body_);
+    output->append(Fmt("{}\r\n{}", t_dateTime, body_));
 }
 
 void HttpResponse::reset() {

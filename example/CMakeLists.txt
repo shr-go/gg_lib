@@ -5,6 +5,7 @@ set(ExampleSrc
         simple/EchoServerExample.cc
         simple/TimerQueueExample.cc
         simple/HttpServerExample.cc
+        Play.cc
         )
 
 foreach(File IN LISTS ExampleSrc)

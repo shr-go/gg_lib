@@ -92,6 +92,12 @@ namespace gg_lib {
             buffer_.reset();
         }
 
+        template<typename ...ARGS>
+        LogStream &operator<<(const FmtHelper<ARGS...> &fmtHelper) {
+            std::size_t len = fmtHelper.formatToN(buffer_.current(), buffer_.avail());
+            buffer_.add(len);
+            return *this;
+        }
 
     private:
         template<typename T>
@@ -100,26 +106,6 @@ namespace gg_lib {
         Buffer buffer_;
         static const int kMaxNumericSize = 48;
     };
-
-    class Fmt {
-    public:
-        template<typename... ARGS>
-        explicit Fmt(const char *fmt, ARGS &&... args) {
-            data_ = fmt::format(fmt, std::forward<ARGS>(args)...);
-        }
-
-        string_view toStringView() const {
-            return data_;
-        }
-
-    private:
-        string data_;
-    };
-
-    inline LogStream &operator<<(LogStream &s, const Fmt &fmt) {
-        s << fmt.toStringView();
-        return s;
-    }
 }
 
 #endif //GG_LIB_LOGSTREAM_H

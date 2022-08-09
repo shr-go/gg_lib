@@ -23,8 +23,9 @@ TcpServer::TcpServer(EventLoop *loop, const InetAddress &listenAddr, string name
           messageCallback_(defaultMessageCallback),
           nextConnId_(1),
           started_(0) {
-    acceptor_->setNewConnectionCallback(
-            std::bind(&TcpServer::newConnection, this, _1, _2));
+    acceptor_->setNewConnectionCallback([this](int sockfd, const InetAddress &peerAddr){
+        newConnection(sockfd, peerAddr);
+    });
 }
 
 TcpServer::~TcpServer() {
@@ -69,9 +70,8 @@ void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr) {
     conn->setMessageCallback(messageCallback_);
     conn->setWriteCompleteCallback(writeCompleteCallback_);
     // FIXME: unsafe
-    conn->setCloseCallback(
-            std::bind(&TcpServer::removeConnection, this, _1));
-    ioLoop->runInLoop(std::bind(&TcpConnection::connectEstablished, conn));
+    conn->setCloseCallback([this](const TcpConnectionPtr &conn){removeConnection(conn);});
+    ioLoop->runInLoop(std::bind(&TcpConnection::connectEstablished, std::move(conn)));
 }
 
 /// here may be not safe cause TcpConnectionPtr may live after TcpServer destroy,

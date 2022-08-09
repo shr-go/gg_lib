@@ -32,7 +32,7 @@ namespace gg_lib {
                 return getCallback_.find(path.c_str()) != getCallback_.end();
             }
 
-            const HttpCallback& getGetCallback(StringArg path) {
+            const HttpCallback& getCallback(StringArg path) {
                 static HttpCallback emptyHttpCallback;
                 auto iter = getCallback_.find(path.c_str());
                 if (iter != getCallback_.end()) {

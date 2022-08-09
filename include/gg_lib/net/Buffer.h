@@ -113,6 +113,14 @@ namespace gg_lib {
                 append(static_cast<const char *>(data), len);
             }
 
+            template<typename ...ARGS>
+            void append(const FmtHelper<ARGS...> &fmtHelper) {
+                std::size_t len = fmtHelper.formatSize();
+                ensureWritableBytes(len);
+                fmtHelper.formatTo(beginWrite());
+                hasWritten(len);
+            }
+
             void ensureWritableBytes(size_t len) {
                 if (writableBytes() < len) {
                     makeSpace(len);

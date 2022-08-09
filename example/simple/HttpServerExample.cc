@@ -11,6 +11,7 @@ using namespace gg_lib;
 using namespace gg_lib::net;
 
 int main(int argc, char **argv) {
+    // Cancel log output
     Logger::setOutput([](const char*, int) {});
     Logger::setFlush([] {});
     Logger::setLogLevel(Logger::WARN);
