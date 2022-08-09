@@ -27,7 +27,7 @@ namespace gg_lib {
                 if (microseconds < 100) {
                     microseconds = 100;
                 }
-                struct timespec ts;
+                struct timespec ts{};
                 ts.tv_sec = static_cast<time_t>(
                         microseconds / Timestamp::kMicroSecondsPerSecond);
                 ts.tv_nsec = static_cast<long>(
@@ -84,10 +84,10 @@ TimerQueue::~TimerQueue() {
 TimerId TimerQueue::addTimer(TimerCallback cb,
                              Timestamp when,
                              double interval) {
-    TimerPtr timer = std::make_shared<Timer>(std::move(cb), when, interval);
+    auto timer = new Timer(std::move(cb), when, interval);
     TimerId timerId = timer->sequence();
     loop_->runInLoop(
-            std::bind(&TimerQueue::addTimerInLoop, this, std::move(timer)));
+            std::bind(&TimerQueue::addTimerInLoop, this, timer));
     return timerId;
 }
 
@@ -96,8 +96,9 @@ void TimerQueue::cancel(TimerId timerId) {
             std::bind(&TimerQueue::cancelInLoop, this, timerId));
 }
 
-void TimerQueue::addTimerInLoop(TimerPtr &timer) {
+void TimerQueue::addTimerInLoop(Timer *rawTimer) {
     loop_->assertInLoopThread();
+    auto timer = std::unique_ptr<Timer>(rawTimer);
     auto expiration = timer->expiration();
     bool earliestChanged = insert(timer);
     if (earliestChanged) {
@@ -114,21 +115,21 @@ void TimerQueue::handleRead() {
     loop_->assertInLoopThread();
     Timestamp now = Timestamp::now();
     readTimerfd(timerfd_, now);
-    std::vector<TimerPtr> expired = getExpired(now);
-    for (const auto &it: expired) {
-        it->run();
+    std::vector<Timer*> expired = getExpired(now);
+    for (auto ptr: expired) {
+        ptr->run();
     }
     reset(expired, now);
 }
 
-std::vector<TimerQueue::TimerPtr> TimerQueue::getExpired(Timestamp now) {
-    std::vector<TimerPtr> expired;
+std::vector<Timer*> TimerQueue::getExpired(Timestamp now) {
+    std::vector<Timer*> expired;
     while (!timers_.empty()) {
         const auto& entry = timers_.top();
         if (entry.first <= now) {
             auto iter = activeTimers_.find(entry.second);
             if (iter != activeTimers_.end()) {
-                expired.push_back(iter->second);
+                expired.push_back(iter->second.get());
             }
             timers_.pop();
         } else {
@@ -138,14 +139,15 @@ std::vector<TimerQueue::TimerPtr> TimerQueue::getExpired(Timestamp now) {
     return expired;
 }
 
-void TimerQueue::reset(const std::vector<TimerPtr> &expired, Timestamp now) {
+void TimerQueue::reset(const std::vector<Timer*> &expired, Timestamp now) {
     Timestamp nextExpire;
-    for (const auto &timer: expired) {
+    for (auto timer: expired) {
         TimerId timerId = timer->sequence();
         // repeat timer may be deleted in its callback.
         if (timer->repeat() && activeTimers_.find(timerId) != activeTimers_.end()) {
             timer->restart(now);
-            insert(timer);
+            Timestamp when = timer->expiration();
+            timers_.emplace(when, timerId);
         } else {
             activeTimers_.erase(timerId);
         }
@@ -166,7 +168,7 @@ void TimerQueue::reset(const std::vector<TimerPtr> &expired, Timestamp now) {
     }
 }
 
-bool TimerQueue::insert(const TimerQueue::TimerPtr &timer) {
+bool TimerQueue::insert(TimerQueue::TimerPtr &timer) {
     loop_->assertInLoopThread();
     bool earliestChanged = false;
     Timestamp when = timer->expiration();
@@ -176,7 +178,7 @@ bool TimerQueue::insert(const TimerQueue::TimerPtr &timer) {
     TimerId timerId = timer->sequence();
     timers_.emplace(when, timerId);
     if (activeTimers_.find(timerId) == activeTimers_.end()) {
-        activeTimers_.emplace(timerId, timer);
+        activeTimers_.emplace(timerId, std::move(timer));
     }
     return earliestChanged;
 }

@@ -24,7 +24,7 @@ namespace gg_lib {
         class TimerQueue : noncopyable {
         public:
             // FIXME use unique_ptr instead.
-            typedef std::shared_ptr<Timer> TimerPtr;
+            typedef std::unique_ptr<Timer> TimerPtr;
 
             explicit TimerQueue(EventLoop *loop);
 
@@ -41,17 +41,17 @@ namespace gg_lib {
             typedef std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> TimerMap;
             typedef std::unordered_map<TimerId, TimerPtr> ActiveTimerMap;
 
-            void addTimerInLoop(TimerPtr &timer);
+            void addTimerInLoop(Timer *timer);
 
             void cancelInLoop(TimerId timerId);
 
             void handleRead();
 
-            std::vector<TimerPtr> getExpired(Timestamp now);
+            std::vector<Timer*> getExpired(Timestamp now);
 
-            void reset(const std::vector<TimerPtr> &expired, Timestamp now);
+            void reset(const std::vector<Timer*> &expired, Timestamp now);
 
-            bool insert(const TimerPtr &timer);
+            bool insert(TimerPtr &timer);
 
             EventLoop *loop_;
             const int timerfd_;
